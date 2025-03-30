@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"example.com/go-htmx-app/greetings"
+	"example.com/go-htmx-app/server"
 	"rsc.io/quote"
 )
 
@@ -18,4 +19,7 @@ func main() {
 	} else {
 		fmt.Println(greeting)
 	}
+
+	server.RegisterEndpoints()
+	server.StartServer("")
 }
