@@ -20,6 +20,6 @@ func main() {
 		fmt.Println(greeting)
 	}
 
-	server.RegisterEndpoints()
-	server.StartServer("")
+	handler := server.RegisterEndpoints()
+	server.StartServer(handler, "")
 }
