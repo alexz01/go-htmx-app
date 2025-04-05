@@ -7,18 +7,46 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func RegisterEndpoints() http.Handler {
+var htmlStr = `
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>My Go App</title>
+</head>
+<body>
+	%s
+</body>
+</html>
+`
 
-	router := mux.NewRouter()
+var router *mux.Router
+
+func GetRouter() *mux.Router {
+	if router == nil {
+		router = mux.NewRouter()
+	}
+	return router
+}
+
+/*
+ */
+func RegisterEndpoints(router *mux.Router) http.Handler {
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello you've requested: %s\n", r.URL.Path)
-	})
+		htmlContent := `
+		<h2>Hello world</h2>
+		<p>requested url: %s</p>
+		`
+		htmlContent = fmt.Sprintf(htmlStr, htmlContent)
+		fmt.Fprintf(w, htmlContent, r.URL.Path)
+	}).Methods(("GET"))
 
 	router.HandleFunc("/page/{name}/{id}", func(w http.ResponseWriter, r *http.Request) {
 		routeVars := mux.Vars(r)
+		htmlContent := `Hello page requested: %s, id: %s`
 
-		fmt.Fprintf(w, "Hello page requested: %s, id: %s\n", routeVars["name"], routeVars["id"])
+		htmlContent = fmt.Sprintf(htmlStr, htmlContent)
+		fmt.Fprintf(w, htmlContent, routeVars["name"], routeVars["id"])
 	})
 
 	fs := http.FileServer(http.Dir("server/static/"))

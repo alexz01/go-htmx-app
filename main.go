@@ -20,6 +20,7 @@ func main() {
 		fmt.Println(greeting)
 	}
 
-	handler := server.RegisterEndpoints()
+	router := server.GetRouter()
+	handler := server.RegisterEndpoints(router)
 	server.StartServer(handler, "")
 }
