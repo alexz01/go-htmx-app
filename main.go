@@ -21,6 +21,6 @@ func main() {
 	}
 
 	router := server.GetRouter()
-	handler := server.RegisterEndpoints(router)
-	server.StartServer(handler, "")
+	server.RegisterEndpoints(router)
+	server.StartServer(router, "")
 }

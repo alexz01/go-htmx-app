@@ -28,9 +28,7 @@ func GetRouter() *mux.Router {
 	return router
 }
 
-/*
- */
-func RegisterEndpoints(router *mux.Router) http.Handler {
+func registerRoot(router *mux.Router) {
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		htmlContent := `
@@ -41,6 +39,16 @@ func RegisterEndpoints(router *mux.Router) http.Handler {
 		fmt.Fprintf(w, htmlContent, r.URL.Path)
 	}).Methods(("GET"))
 
+	fs := http.FileServer(http.Dir("server/static/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+}
+
+/*
+ */
+func RegisterEndpoints(router *mux.Router) {
+
+	registerRoot(router)
+
 	router.HandleFunc("/page/{name}/{id}", func(w http.ResponseWriter, r *http.Request) {
 		routeVars := mux.Vars(r)
 		htmlContent := `Hello page requested: %s, id: %s`
@@ -49,9 +57,6 @@ func RegisterEndpoints(router *mux.Router) http.Handler {
 		fmt.Fprintf(w, htmlContent, routeVars["name"], routeVars["id"])
 	})
 
-	fs := http.FileServer(http.Dir("server/static/"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	return router
 }
 
 func StartServer(handler http.Handler, port string) error {
